@@ -1,18 +1,29 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public MovementDirection CurrentMode = MovementDirection.Vertical;
+    private PlayerController player;
 
-    private void Awake()
+    void Awake()
     {
         Instance = this;
     }
 
-    public void SetMode(MovementDirection mode)
+    void Start()
     {
-        CurrentMode = mode;
+        player = FindFirstObjectByType<PlayerController>();
+    }
+
+    public void PlayerTurnLeft()
+    {
+        player.TurnLeft();
+    }
+
+    public void PlayerTurnRight()
+    {
+        player.TurnRight();
     }
 }

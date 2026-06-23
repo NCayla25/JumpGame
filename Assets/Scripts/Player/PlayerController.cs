@@ -4,101 +4,116 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement Speeds")]
-    public float verticalSpeed = 5f;
-    public float horizontalSpeed = 6f;
-
-    [Header("Jetpack / Jump")]
-    public float jetpackJumpForce = 8f;
-
-    [Header("Ground Check")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float groundCheckRadius = 0.15f;
-
-    private bool isGrounded;
-
-    public MovementDirection mode;
+    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float jumpForce = 10f;
 
     private Rigidbody2D rb;
 
-    private void Awake()
+    private bool isGrounded = false;
+
+    public enum Direction
+    {
+        Up,
+        Left,
+        Right
+    }
+
+    public Direction currentDirection = Direction.Up;
+
+    private Vector2 moveDirection = Vector2.up;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        UpdateMoveDirection();
     }
 
-    private void Update()
+    void Update()
     {
-        bool tapped = false;
+        Move();
 
-        if (Mouse.current != null && 
-            Mouse.current.leftButton.wasPressedThisFrame)
+        if (InputManager.Instance.JumpPressed())
         {
-            tapped = true;
-        }
-
-        if (Touchscreen.current != null && 
-            Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
-        {
-            tapped = true;
-        }
-
-        if (tapped)
-        {
-            JetPack();
+            Jump();
         }
     }
 
-    private void CheckGround()
+    void Move()
     {
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer
+        Vector2 movement = moveDirection * moveSpeed;
+
+        rb.linearVelocity = new Vector2(
+            movement.x,
+            rb.linearVelocity.y
         );
-    }
 
-    private void FixedUpdate()
-    {
-        //ApplyForwardMovement();
-    }
-
-    private void ApplyForwardMovement()
-    {
-        Vector2 velocity = rb.linearVelocity;
-
-        switch (mode)
+        if (currentDirection == Direction.Up)
         {
-            case MovementDirection.HorizontalLeft:
-                velocity.x = -horizontalSpeed;
-                break;
-            case MovementDirection.HorizontalRight:
-                velocity.x = horizontalSpeed;
-                break;
-        }
+            rb.linearVelocity = new Vector2(
+                0,
+                rb.linearVelocity.y
+            );
 
-        rb.linearVelocity = new Vector2(velocity.x, velocity.y);
+            transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
+        }
     }
 
-    private void Jump()
+    void Jump()
     {
         if (!isGrounded)
         {
             return;
         }
 
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
-        rb.AddForce(Vector2.up * jetpackJumpForce, ForceMode2D.Impulse);
+        rb.linearVelocity = new Vector2(
+            rb.linearVelocity.x,
+            jumpForce
+        );
     }
 
-    private void JetPack()
+    public void TurnLeft()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
-        rb.AddForce(Vector2.up * jetpackJumpForce, ForceMode2D.Impulse);
+        currentDirection = Direction.Left;
+        UpdateMoveDirection();
     }
 
-    public void SetMode(MovementDirection newMode)
+    public void TurnRight()
     {
-        mode = newMode;
+        currentDirection = Direction.Right;
+        UpdateMoveDirection();
+    }
+
+    public void ContinueForward()
+    {
+        currentDirection = Direction.Up;
+        UpdateMoveDirection();
+    }
+
+    void UpdateMoveDirection()
+    {
+        switch (currentDirection)
+        {
+            case Direction.Up:
+                moveDirection = Vector2.up;
+                break;
+
+            case Direction.Left:
+                moveDirection = Vector2.left;
+                break;
+
+            case Direction.Right:
+                moveDirection = Vector2.right;
+                break;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        isGrounded = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        isGrounded = false;
     }
 }
