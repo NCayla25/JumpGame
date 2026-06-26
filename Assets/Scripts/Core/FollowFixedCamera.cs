@@ -7,5 +7,6 @@ public class FollowFixedCamera : MonoBehaviour
     private void LateUpdate()
     {
         transform.position = fixedPosition;
+
     }
 }

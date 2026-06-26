@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5232663722895088473}
   - component: {fileID: 1559895715332160729}
   - component: {fileID: 7068827913992271322}
-  - component: {fileID: 8005851899060265052}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -152,16 +151,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816f720e1c85cf446a5784e04e4b048f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Obstacle
---- !u!114 &8005851899060265052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 95759861986666459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb3667bfb81b36b45a4b600950239f7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScrollingObject
-  despawnDistance: 14

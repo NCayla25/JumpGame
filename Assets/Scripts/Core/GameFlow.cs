@@ -10,14 +10,18 @@ public class GameFlow : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private TravelDirection startingDirection = TravelDirection.Up;
-    [SerializeField] private float scrollSpeed = 5f;
+    [SerializeField] private float baseScrollSpeed = 3.5f;
 
     [Header("State")]
     [SerializeField] private bool startRunning = true;
 
     public TravelDirection CurrentDirection { get; private set; }
     public Vector2 DirectionVector => CurrentDirection.ToVector2();
-    public float ScrollSpeed => scrollSpeed;
+    public float BaseScrollSpeed => baseScrollSpeed;
+    public float ScrollSpeedMultiplier { get; private set; } = 1f;
+
+    public float ScrollSpeed => baseScrollSpeed * ScrollSpeedMultiplier;
+
     public bool IsGameOver { get; private set; }
     public bool IsRunning { get; private set; }
 
@@ -32,8 +36,10 @@ public class GameFlow : MonoBehaviour
         }
 
         Instance = this;
+
         CurrentDirection = startingDirection;
         IsRunning = startRunning;
+        ScrollSpeedMultiplier = 1f;
     }
 
     private void Update()
@@ -43,7 +49,7 @@ public class GameFlow : MonoBehaviour
             return;
         }
 
-        DistanceTravelled += scrollSpeed * Time.deltaTime;
+        DistanceTravelled += ScrollSpeed * Time.deltaTime;
     }
 
     public void SetDirection(TravelDirection newDirection)
@@ -58,6 +64,11 @@ public class GameFlow : MonoBehaviour
         {
             DirectionChanged?.Invoke(oldDirection, newDirection);
         }
+    }
+
+    public void SetScrollSpeedMultiplier(float multiplier)
+    {
+        ScrollSpeedMultiplier = Mathf.Clamp01(multiplier);
     }
 
     public void GameOver()

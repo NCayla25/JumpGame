@@ -25,7 +25,12 @@ public class CrossroadSpawner : MonoBehaviour
         if (!GameFlow.Instance.IsRunning || GameFlow.Instance.IsGameOver)
             return;
 
-        timer += Time.deltaTime;
+        float timerMultiplier = GetTimerMultiplier();
+
+        if (timerMultiplier <= 0f)
+            return;
+        
+        timer += Time.deltaTime * timerMultiplier;
 
         float targetTime = firstCrossroadSpawned
             ? secondsBetweenCrossroads
@@ -37,6 +42,17 @@ public class CrossroadSpawner : MonoBehaviour
             timer = 0f;
             firstCrossroadSpawned = true;
         }
+    }
+
+    private float GetTimerMultiplier()
+    {
+        if (GameFlow.Instance == null)
+            return 0f;
+
+        if (GameFlow.Instance.CurrentDirection == TravelDirection.Up)
+            return GameFlow.Instance.ScrollSpeedMultiplier;
+
+        return 1f;
     }
 
     private void SpawnCrossroad()

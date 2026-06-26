@@ -16,10 +16,10 @@ public class PlayerJumpController : MonoBehaviour
     [SerializeField] private float fixedXPosition = 0f;
 
     [Header("Up Direction - Screen Bounds")]
-    [SerializeField] private bool killIfFallsBelowScreen = true;
     [SerializeField] private float lowerDeathY = -5.4f;
-    [SerializeField] private bool clampToCeiling = true;
     [SerializeField] private float ceilingY = 4.4f;
+    [SerializeField] private bool killIfFallsBelowScreen = true;
+    [SerializeField] private bool clampToCeiling = true;
 
     [Header("Left/Right Direction - Jump Over Mode")]
     [SerializeField] private float groundJumpDuration = 0.55f;

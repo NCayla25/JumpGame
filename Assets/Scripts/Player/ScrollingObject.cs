@@ -5,6 +5,9 @@ public class ScrollingObject : MonoBehaviour
     [Header("Despawn")]
     [SerializeField] private float despawnDistance = 14f;
 
+    [Header("Debug")]
+    [SerializeField] private bool showDebugLogs = false;
+
     private Vector2 movementDirection = Vector2.up;
     private bool movementDirectionSet;
 
@@ -25,6 +28,18 @@ public class ScrollingObject : MonoBehaviour
             return;
 
         float speed = GameFlow.Instance.ScrollSpeed;
+
+        if (showDebugLogs)
+        {
+            Debug.Log(
+                $"{name} | Speed: {speed:F2} | " +
+                $"Multiplier: {GameFlow.Instance.ScrollSpeedMultiplier:F2} | " +
+                $"Position: {transform.position}"
+                );
+        }
+
+        if (speed <= 0.001f)
+            return;
 
         transform.position += (Vector3)(-movementDirection * speed * Time.deltaTime);
 
